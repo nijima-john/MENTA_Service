@@ -37,7 +37,11 @@ export const todosSlice = createSlice({
         todo.isCompleted = !todo.isCompleted;
       }
     },
+    togleTodo: (state, action: PayloadAction<any>) => {
+      // eslint-disable-next-line no-self-assign
+      state.todos.map((todo) => (todo.id === action.payload ? (todo.isCompleted = !todo.isCompleted) : (todo.isCompleted = todo.isCompleted)) )
+    }
   },
 })
 
-export const { add, remove, completeTask } = todosSlice.actions
+export const { add, remove, completeTask, togleTodo } = todosSlice.actions
