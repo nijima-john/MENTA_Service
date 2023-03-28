@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { type RootState } from '../app/store';
-import { completeTask,  type Todo } from "../features/todo/todoSlice"
+import { completeTask, type Todo } from "../features/todo/todoSlice"
 
 
 
@@ -12,11 +12,9 @@ export const List: React.FunctionComponent = () => {
   return (
     <>
       <h1>Todolist</h1>
-      {/* <input type="checkbox" onClick={() => { console.log(dispatch(togleTodo(todos))) }}></input> */}
       {todos.map((todo: Todo) => {
         return (
           <div key={todo.id}>
-
             <div>
               {todo.isCompleted ?
                 <>
