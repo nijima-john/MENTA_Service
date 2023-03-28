@@ -31,7 +31,13 @@ export const todosSlice = createSlice({
     remove: (state, action: PayloadAction<string>) => {
       state.todos = state.todos.filter((todo) => todo.id !== action.payload)
     },
+    completeTask: (state, action:  PayloadAction<Todo>) => {
+      const todo = state.todos.find((t) => t.id === action.payload.id)
+      if(todo != null){
+        todo.isCompleted = !todo.isCompleted;
+      }
+    },
   },
 })
 
-export const { add, remove } = todosSlice.actions
+export const { add, remove, completeTask } = todosSlice.actions
