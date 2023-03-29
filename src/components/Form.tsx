@@ -44,7 +44,9 @@ export const Form = (): any => {
           送信
         </Button>
       </form>
-      <button onClick={handleButton}>Toggle Hide Completed</button>
+      <Button variant="outlined" onClick={handleButton}
+        style={{ marginTop: "10px" }}
+      >完了済みのTodoを非表示にする</Button>
     </>
   )
 }

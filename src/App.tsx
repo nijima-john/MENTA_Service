@@ -8,9 +8,7 @@ const App: React.FunctionComponent = () => {
     <>
       <div style={{ marginTop: '5%', marginLeft: '5%' }}>
         <Form />
-        <div style={{ marginTop: '5%' }}>
-          <List />
-        </div>
+        <List />
       </div>
     </>
   )
