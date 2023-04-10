@@ -11,8 +11,6 @@ export interface EditActionPayload {
   content: string
 }
 
-
-
 const state = {
   todos: [
     {
