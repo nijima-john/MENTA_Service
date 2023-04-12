@@ -1,5 +1,4 @@
-/* eslint-disable array-callback-return */
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+
 
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -72,13 +71,13 @@ export const List: React.FunctionComponent = () => {
   const sortedTodos = useMemo(() => {
     let _sortedTodos = todos;
     if (sort.key) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       _sortedTodos = _sortedTodos.sort((a, b): any => {
         a = a[sort.key];
+        console.log(a);
         b = b[sort.key];
 
         if (a === b) {
-          return 0;
+          return 0; // 比較対象が等しい場合
         }
         if (a > b) {
           return 1 * sort.order;
@@ -90,8 +89,6 @@ export const List: React.FunctionComponent = () => {
     }
     return _sortedTodos;
   }, [sort, todos]);
-
-
   return (
     <>
 
@@ -109,7 +106,6 @@ export const List: React.FunctionComponent = () => {
                   onClick={() => { handleSort(key) }}
                 >
                   {key}
-
                 </Button>
               ))}
 
