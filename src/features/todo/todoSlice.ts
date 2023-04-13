@@ -11,8 +11,6 @@ export interface EditActionPayload {
   content: string
 }
 
-
-
 const state = {
   todos: [
     {
@@ -26,6 +24,7 @@ const state = {
       isCompleted: true,
     },
   ],
+  hideCompleted: false,
 }
 
 export const todosSlice = createSlice({
@@ -38,6 +37,13 @@ export const todosSlice = createSlice({
     remove: (state, action: PayloadAction<string>) => {
       state.todos = state.todos.filter((todo) => todo.id !== action.payload)
     },
+    toggleCompleteTask: (state, action: PayloadAction<Todo>) => {
+      const { id } = action.payload
+      state.todos = state.todos.map((todo) => (todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo))
+    },
+    toggleHideCompleted: (state) => {
+      state.hideCompleted = !state.hideCompleted
+    },
     editContent: (state, action: PayloadAction<EditActionPayload>) => {
       const { id, content } = action.payload
       state.todos = state.todos.map((todo) => (todo.id === id ? { ...todo, content } : todo))
@@ -45,4 +51,4 @@ export const todosSlice = createSlice({
   },
 })
 
-export const { add, remove, editContent } = todosSlice.actions
+export const { add, remove, toggleHideCompleted, toggleCompleteTask, editContent } = todosSlice.actions

@@ -1,8 +1,8 @@
 
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '../app/store';
-import { editContent, remove } from "../features/todo/todoSlice"
+import { editContent } from "../features/todo/todoSlice"
+import { useState } from 'react';
 import { ListItemEdit } from './ListItemEdit';
 import { ListItem } from './ListItem';
 import escapeStringRegexp from 'escape-string-regexp';
@@ -18,9 +18,7 @@ export const List: React.FunctionComponent = () => {
     content: "",
     isCompleted: false,
   });
-  const removeTodo = (id: string): void => {
-    dispatch(remove(id))
-  }
+
   const handleEditButtonPushed = (id: string, content: string): void => {
     setIsEditing(true)
     setEditingState({
@@ -50,6 +48,7 @@ export const List: React.FunctionComponent = () => {
   const onInput = (e: React.FormEvent<HTMLInputElement>): void => {
     setSearchContent(e.currentTarget.value);
   }
+  const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
 
   const filteredList = todos.filter((item) => {
     const escapedText = escapeStringRegexp(searchContent.toLowerCase());
@@ -71,12 +70,16 @@ export const List: React.FunctionComponent = () => {
           <>
             <h1>Todolist</h1>
             <div>
-              {filteredList.map(({ id, content, isCompleted }) => {
+              {filteredList.map((todo) => {
+                const { id, isCompleted } = todo
                 return (
-                  <div key={id}>
-                  <ListItem listKey={id} isCompleted={isCompleted} content={content} removeTodo={removeTodo} handleEditButtonPushed={handleEditButtonPushed} />
-                  </div>
-                );
+                  (!hideCompleted || !isCompleted) && (
+                    <div key={id}>
+                      <ListItem
+                        todo={todo}
+                        handleEditButtonPushed={handleEditButtonPushed} />
+                    </div>
+                  ));
               })}
             </div>
           </>
