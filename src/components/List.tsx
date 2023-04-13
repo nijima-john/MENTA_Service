@@ -52,43 +52,46 @@ export const List: React.FunctionComponent = () => {
   }
 
   const KEYS = Object.keys(todos[0])
+  // IDのkeyを消す
 
   const handleSort = (key: string): void => {
     if (sort.key === key) {
-      // orderにマイナスをつけることで、ソートの並びを反転させる。
       setSort({ ...sort, order: -sort.order });
-      console.log(sort)
     } else {
-      // 昇順にするために、orderは1を設定。
       setSort({
         key,
         order: 1
       })
-      console.log(sort)
     }
   };
 
   const sortedTodos = useMemo(() => {
-    let _sortedTodos = todos;
+    const copy = [...todos]
+    let _sortedTodos = copy;
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (sort.key) {
-      _sortedTodos = _sortedTodos.sort((a, b): any => {
-        a = a[sort.key];
-        console.log(a);
-        b = b[sort.key];
-
-        if (a === b) {
-          return 0; // 比較対象が等しい場合
+      _sortedTodos = _sortedTodos.sort((a, b) => {
+        if (sort.key === "isCompleted") {
+          const valueA = a.isCompleted;
+          const valueB = b.isCompleted;
+          return valueA > valueB ? 1 * sort.order : -1 * sort.order;
+        } else if (sort.key === "content") {
+          const valueA = a.content;
+          const valueB = b.content;
+          return valueA < valueB ? 1 * sort.order : -1 * sort.order;
+        } else if (sort.key === "id") {
+          const valueA = a.id;
+          const valueB = b.id;
+          return valueA > valueB ? 1 * sort.order : -1 * sort.order;
         }
-        if (a > b) {
-          return 1 * sort.order;
-        }
-        if (a < b) {
-          return -1 * sort.order;
+        else {
+          return 0;
         }
       });
     }
     return _sortedTodos;
   }, [sort, todos]);
+
   return (
     <>
 
