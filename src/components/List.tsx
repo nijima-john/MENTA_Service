@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '../app/store';
-import { editContent, remove } from "../features/todo/todoSlice"
+import { editContent } from "../features/todo/todoSlice"
 import { ListItemEdit } from './ListItemEdit';
 import { ListItem } from './ListItem';
 import { Button } from '@mui/material';
@@ -22,9 +22,7 @@ export const List: React.FunctionComponent = () => {
     key: 'content',
     order: 1,
   });
-  const removeTodo = (id: string): void => {
-    dispatch(remove(id))
-  }
+
   const handleEditButtonPushed = (id: string, content: string): void => {
     setIsEditing(true)
     setEditingState({
@@ -40,6 +38,8 @@ export const List: React.FunctionComponent = () => {
   }
 
   const { content, id } = editingState;
+
+  const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
 
   const editTodo = (): void => {
     if (content === '') {
@@ -94,7 +94,6 @@ export const List: React.FunctionComponent = () => {
 
   return (
     <>
-
       {
         isEditing ?
           <ListItemEdit content={content} handleChange={handleChange} editTodo={editTodo} />
@@ -111,14 +110,18 @@ export const List: React.FunctionComponent = () => {
                   {key}
                 </Button>
               ))}
-
-              {sortedTodos.map(({ id, content, isCompleted }) => {
-                return (
-                  <div key={id}>
-                    <ListItem listKey={id} isCompleted={isCompleted} content={content} removeTodo={removeTodo} handleEditButtonPushed={handleEditButtonPushed} />
-                  </div>
-                );
-              })}
+              {
+                sortedTodos.map((todo) => {
+                  const { id, isCompleted } = todo
+                  return (
+                    (!hideCompleted || !isCompleted) && (
+                      <div key={id}>
+                        <ListItem
+                          todo={todo}
+                          handleEditButtonPushed={handleEditButtonPushed} />
+                      </div>
+                    ));
+                })}
             </div>
           </>
       }
