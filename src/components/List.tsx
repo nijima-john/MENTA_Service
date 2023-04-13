@@ -107,7 +107,7 @@ export const List: React.FunctionComponent = () => {
                   key={index}
                   onClick={() => { handleSort(key) }}
                 >
-                  {key}
+                  {key}で並び替え
                 </Button>
               ))}
               {
