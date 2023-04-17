@@ -11,6 +11,7 @@ export const Form = (): any => {
   const dispatch = useDispatch();
   const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
   const ID = uuidv4();
+
   const addTodo = (content: string): void => {
     const newTodo: Todo = {
       id: ID,
