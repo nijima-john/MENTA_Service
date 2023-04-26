@@ -12,7 +12,7 @@ export const List: React.FunctionComponent = () => {
   const dispatch = useAppDispatch()
   const todos = useSelector((state: RootState) => state.todos.todos)
   const [isEditing, setIsEditing] = useState(false);
-  const [searchContent, setSearchContent] = useState(""); // updateをsetに修正する.
+  const [searchContent, setSearchContent] = useState("");
   const [editingState, setEditingState] = useState({
     id: "",
     content: "",
