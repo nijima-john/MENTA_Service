@@ -57,7 +57,6 @@ export const List: React.FunctionComponent = () => {
   }
 
   const KEYS = Object.keys(todos[0])
-  // IDのkeyを消す
 
   const handleSort = (key: string): void => {
     if (sort.key === key) {
@@ -114,7 +113,6 @@ export const List: React.FunctionComponent = () => {
           <>
             <h1>Todolist</h1>
             <div>
-
               {KEYS.map((key, index) => (
                 <Button variant="contained"
                   style={{ margin: "5px" }}
