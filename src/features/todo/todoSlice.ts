@@ -62,8 +62,6 @@ export const useFilteredList = (searchContent: string): Todo[] => {
     const escapedText = escapeStringRegexp(searchContent.toLowerCase())
     return new RegExp(escapedText).test(item.content.toLowerCase())
   })
-  const copy = [...todos]
-
 }
 
 export const useSearchList = (): any => {
