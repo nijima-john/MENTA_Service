@@ -7,12 +7,14 @@ import { editContent } from "../features/todo/todoSlice"
 import { ListItemEdit } from './ListItemEdit';
 import { ListItem } from './ListItem';
 import { Button } from '@mui/material';
+import escapeStringRegexp from 'escape-string-regexp';
 
 export const List: React.FunctionComponent = () => {
 
   const dispatch = useAppDispatch()
   const todos = useSelector((state: RootState) => state.todos.todos)
   const [isEditing, setIsEditing] = useState(false);
+  const [searchContent, setSearchContent] = useState(""); // updateをsetに修正する.
   const [editingState, setEditingState] = useState({
     id: "",
     content: "",
@@ -38,6 +40,10 @@ export const List: React.FunctionComponent = () => {
   }
 
   const { content, id } = editingState;
+
+  const onInput = (e: React.FormEvent<HTMLInputElement>): void => {
+    setSearchContent(e.currentTarget.value);
+  }
 
   const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
 
@@ -92,8 +98,19 @@ export const List: React.FunctionComponent = () => {
     return _sortedTodos;
   }, [sort, todos]);
 
+  const filteredList = todos.filter((item) => {
+    const escapedText = escapeStringRegexp(searchContent.toLowerCase());
+    return new RegExp(escapedText).test(item.content.toLowerCase());
+  })
+
   return (
     <>
+      <input
+        type="text"
+        onInput={onInput}
+        placeholder={"検索"}
+      />
+
       {
         isEditing ?
           <ListItemEdit content={content} handleChange={handleChange} editTodo={editTodo} />
@@ -101,7 +118,8 @@ export const List: React.FunctionComponent = () => {
           <>
             <h1>Todolist</h1>
             <div>
-              {KEYS.map((key, index) => (
+
+               {KEYS.map((key, index) => (
                 <Button variant="contained"
                   style={{ margin: "5px" }}
                   key={index}
@@ -110,7 +128,7 @@ export const List: React.FunctionComponent = () => {
                   {key}で並び替え
                 </Button>
               ))}
-              {
+              {/* {
                 sortedTodos.map((todo) => {
                   const { id, isCompleted } = todo
                   return (
@@ -121,7 +139,19 @@ export const List: React.FunctionComponent = () => {
                           handleEditButtonPushed={handleEditButtonPushed} />
                       </div>
                     ));
-                })}
+                })}  */}
+
+              {filteredList.map((todo) => {
+                const { id, isCompleted } = todo
+                return (
+                  (!hideCompleted || !isCompleted) && (
+                    <div key={id}>
+                      <ListItem
+                        todo={todo}
+                        handleEditButtonPushed={handleEditButtonPushed} />
+                    </div>
+                  ));
+              })}
             </div>
           </>
       }
