@@ -3,11 +3,10 @@
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '../app/store';
-import { editContent } from "../features/todo/todoSlice"
+import { editContent, useFilteredList } from "../features/todo/todoSlice"
 import { ListItemEdit } from './ListItemEdit';
 import { ListItem } from './ListItem';
 import { Button } from '@mui/material';
-import escapeStringRegexp from 'escape-string-regexp';
 
 export const List: React.FunctionComponent = () => {
 
@@ -98,10 +97,7 @@ export const List: React.FunctionComponent = () => {
     return _sortedTodos;
   }, [sort, todos]);
 
-  const filteredList = todos.filter((item) => {
-    const escapedText = escapeStringRegexp(searchContent.toLowerCase());
-    return new RegExp(escapedText).test(item.content.toLowerCase());
-  })
+  const filteredList = useFilteredList(searchContent)
 
   return (
     <>
@@ -119,7 +115,7 @@ export const List: React.FunctionComponent = () => {
             <h1>Todolist</h1>
             <div>
 
-               {KEYS.map((key, index) => (
+              {KEYS.map((key, index) => (
                 <Button variant="contained"
                   style={{ margin: "5px" }}
                   key={index}
