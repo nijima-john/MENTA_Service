@@ -1,7 +1,7 @@
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '../app/store';
-import { editContent, useFilteredList } from "../features/todo/todoSlice"
+import { editContent, fetchAPI, useFilteredList } from "../features/todo/todoSlice"
 import { useState } from 'react';
 import { ListItemEdit } from './ListItemEdit';
 import { ListItem } from './ListItem';
@@ -43,6 +43,10 @@ export const List: React.FunctionComponent = () => {
     setIsEditing(false);
   }
 
+  const API = (): void => {
+    void dispatch(fetchAPI());
+  }
+
   const onInput = (e: React.FormEvent<HTMLInputElement>): void => {
     setSearchContent(e.currentTarget.value);
   }
@@ -57,6 +61,7 @@ export const List: React.FunctionComponent = () => {
         onInput={onInput}
         placeholder={"検索"}
       />
+      <button onClick={() => {API()}}>api</button>
 
       {
         isEditing ?
