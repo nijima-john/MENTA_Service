@@ -43,7 +43,7 @@ export const List: React.FunctionComponent = () => {
     setIsEditing(false);
   }
 
-  const API = (): void => {
+  const fetchPostAPI = (): void => {
     void dispatch(fetchAPI());
   }
 
@@ -61,7 +61,7 @@ export const List: React.FunctionComponent = () => {
         onInput={onInput}
         placeholder={"検索"}
       />
-      <button onClick={() => {API()}}>api</button>
+      <button onClick={fetchPostAPI}>api</button>
 
       {
         isEditing ?
