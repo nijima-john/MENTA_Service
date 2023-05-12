@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import escapeStringRegexp from 'escape-string-regexp'
 import { useSelector } from 'react-redux'
 import { type RootState } from '../../app/store'
+import escapeStringRegexp from 'escape-string-regexp'
 
 export interface Todo {
   id: string
@@ -56,14 +56,10 @@ export const todosSlice = createSlice({
 
 export const { add, remove, toggleHideCompleted, toggleCompleteTask, editContent } = todosSlice.actions
 
-export const useFilteredList = (searchContent: string): Todo[] => {
+export const useFilteredList = (searchContent): Todo[] => {
   const todos = useSelector((state: RootState) => state.todos.todos)
   return todos.filter((item) => {
     const escapedText = escapeStringRegexp(searchContent.toLowerCase())
     return new RegExp(escapedText).test(item.content.toLowerCase())
   })
-}
-
-export const useSearchList = (): any => {
-
 }
