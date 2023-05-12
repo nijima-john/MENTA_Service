@@ -56,10 +56,32 @@ export const todosSlice = createSlice({
 
 export const { add, remove, toggleHideCompleted, toggleCompleteTask, editContent } = todosSlice.actions
 
-export const useFilteredList = (searchContent): Todo[] => {
+export const useFilteredList = (searchContent, handleSort, sort): any => {
   const todos = useSelector((state: RootState) => state.todos.todos)
-  return todos.filter((item) => {
+
+  const filteredArray = todos.filter((item) => {
     const escapedText = escapeStringRegexp(searchContent.toLowerCase())
     return new RegExp(escapedText).test(item.content.toLowerCase())
   })
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+  if (sort.key) {
+    const sortedArray = filteredArray.sort((a, b) => {
+      if (sort.key === 'isCompleted') {
+        const valueA = a.isCompleted
+        const valueB = b.isCompleted
+        return valueA > valueB ? 1 * sort.order : -1 * sort.order
+      } else if (sort.key === 'content') {
+        const valueA = a.content
+        const valueB = b.content
+        return valueA < valueB ? 1 * sort.order : -1 * sort.order
+      } else if (sort.key === 'id') {
+        const valueA = a.id
+        const valueB = b.id
+        return valueA > valueB ? 1 * sort.order : -1 * sort.order
+      } else {
+        return 0
+      }
+    })
+    return sortedArray
+  }
 }

@@ -1,6 +1,6 @@
 
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '../app/store';
 import { editContent, useFilteredList } from "../features/todo/todoSlice"
@@ -69,34 +69,7 @@ export const List: React.FunctionComponent = () => {
     }
   };
 
-  const sortedTodos = useMemo(() => {
-    const copy = [...todos]
-    let _sortedTodos = copy;
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (sort.key) {
-      _sortedTodos = _sortedTodos.sort((a, b) => {
-        if (sort.key === "isCompleted") {
-          const valueA = a.isCompleted;
-          const valueB = b.isCompleted;
-          return valueA > valueB ? 1 * sort.order : -1 * sort.order;
-        } else if (sort.key === "content") {
-          const valueA = a.content;
-          const valueB = b.content;
-          return valueA < valueB ? 1 * sort.order : -1 * sort.order;
-        } else if (sort.key === "id") {
-          const valueA = a.id;
-          const valueB = b.id;
-          return valueA > valueB ? 1 * sort.order : -1 * sort.order;
-        }
-        else {
-          return 0;
-        }
-      });
-    }
-    return _sortedTodos;
-  }, [sort, todos]);
-
-  const filteredList = useFilteredList(searchContent)
+  const filteredList = useFilteredList(searchContent, handleSort, sort)
 
   return (
     <>
@@ -122,22 +95,11 @@ export const List: React.FunctionComponent = () => {
                   {key}で並び替え
                 </Button>
               ))}
-              {/* {
-                sortedTodos.map((todo) => {
-                  const { id, isCompleted } = todo
-                  return (
-                    (!hideCompleted || !isCompleted) && (
-                      <div key={id}>
-                        <ListItem
-                          todo={todo}
-                          handleEditButtonPushed={handleEditButtonPushed} />
-                      </div>
-                    ));
-                })}  */}
 
               {filteredList.map((todo) => {
                 const { id, isCompleted } = todo
                 return (
+                  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
                   (!hideCompleted || !isCompleted) && (
                     <div key={id}>
                       <ListItem
