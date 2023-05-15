@@ -1,7 +1,8 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
 import { type RootState } from '../../app/store'
 import escapeStringRegexp from 'escape-string-regexp'
+import axios from 'axios'
 
 export interface Todo {
   id: string
@@ -29,6 +30,14 @@ const state = {
   ],
   hideCompleted: false,
 }
+
+const POST = 'http://localhost:8000/posts'
+
+export const fetchAPI = createAsyncThunk('api/fetchAPI', async () => {
+  const response = await axios.get(POST)
+  console.log(response.data)
+})
+
 
 export const todosSlice = createSlice({
   name: 'todosSlice',
@@ -85,3 +94,4 @@ export const useFilteredList = (searchContent, handleSort, sort): any => {
     return sortedArray
   }
 }
+

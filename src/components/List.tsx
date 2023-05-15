@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '../app/store';
-import { editContent, useFilteredList } from "../features/todo/todoSlice"
+import { editContent, fetchAPI, useFilteredList } from "../features/todo/todoSlice"
 import { ListItemEdit } from './ListItemEdit';
 import { ListItem } from './ListItem';
 import { Button } from '@mui/material';
@@ -57,6 +57,9 @@ export const List: React.FunctionComponent = () => {
   }
 
   const KEYS = Object.keys(todos[0])
+  const fetchPostAPI = (): void => {
+    void dispatch(fetchAPI());
+  }
 
   const handleSort = (key: string): void => {
     if (sort.key === key) {
@@ -78,6 +81,7 @@ export const List: React.FunctionComponent = () => {
         onInput={onInput}
         placeholder={"検索"}
       />
+      <button onClick={fetchPostAPI}>api</button>
 
       {
         isEditing ?
