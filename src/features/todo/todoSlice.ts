@@ -15,6 +15,17 @@ export interface EditActionPayload {
   content: string
 }
 
+interface SearchContent {
+  id: string
+  content: string
+  isCompleted: boolean
+}
+
+interface Sort {
+  key: string
+  order: number
+}
+
 const state = {
   todos: [
     {
@@ -37,7 +48,6 @@ export const fetchAPI = createAsyncThunk('api/fetchAPI', async () => {
   const response = await axios.get(POST)
   console.log(response.data)
 })
-
 
 export const todosSlice = createSlice({
   name: 'todosSlice',
@@ -65,7 +75,7 @@ export const todosSlice = createSlice({
 
 export const { add, remove, toggleHideCompleted, toggleCompleteTask, editContent } = todosSlice.actions
 
-export const useFilteredList = (searchContent, handleSort, sort): any => {
+export const useFilteredList = (sort, searchContent): any | SearchContent | Sort => {
   const todos = useSelector((state: RootState) => state.todos.todos)
 
   const filteredArray = todos.filter((item) => {
@@ -91,7 +101,10 @@ export const useFilteredList = (searchContent, handleSort, sort): any => {
         return 0
       }
     })
-    return sortedArray
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+    state.todos.map((todo) => {
+    return (!state.hideCompleted || todo.isCompleted) && sortedArray
+    })
+
   }
 }
-

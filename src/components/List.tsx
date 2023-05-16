@@ -12,17 +12,20 @@ export const List: React.FunctionComponent = () => {
 
   const dispatch = useAppDispatch()
   const todos = useSelector((state: RootState) => state.todos.todos)
+  const [sort, setSort] = useState<any>({
+    key: 'content',
+    order: 1,
+  })
+
+
+  const [searchContent, setSearchContent] = useState('')
   const [isEditing, setIsEditing] = useState(false);
-  const [searchContent, setSearchContent] = useState(""); // updateをsetに修正する.
   const [editingState, setEditingState] = useState({
     id: "",
     content: "",
     isCompleted: false,
   });
-  const [sort, setSort] = useState<any>({
-    key: 'content',
-    order: 1,
-  });
+
 
   const handleEditButtonPushed = (id: string, content: string): void => {
     setIsEditing(true)
@@ -44,8 +47,6 @@ export const List: React.FunctionComponent = () => {
     setSearchContent(e.currentTarget.value);
   }
 
-  const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
-
   const editTodo = (): void => {
     if (content === '') {
       return;
@@ -62,17 +63,10 @@ export const List: React.FunctionComponent = () => {
   }
 
   const handleSort = (key: string): void => {
-    if (sort.key === key) {
-      setSort({ ...sort, order: -sort.order });
-    } else {
-      setSort({
-        key,
-        order: 1
-      })
-    }
+    setSort({ ...sort, order: -sort.order });
   };
 
-  const filteredList = useFilteredList(searchContent, handleSort, sort)
+  const filteredList = useFilteredList(sort, searchContent)
 
   return (
     <>
@@ -101,16 +95,14 @@ export const List: React.FunctionComponent = () => {
               ))}
 
               {filteredList.map((todo) => {
-                const { id, isCompleted } = todo
+                const { id } = todo
                 return (
-                  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-                  (!hideCompleted || !isCompleted) && (
-                    <div key={id}>
-                      <ListItem
-                        todo={todo}
-                        handleEditButtonPushed={handleEditButtonPushed} />
-                    </div>
-                  ));
+                  <div key={id}>
+                    <ListItem
+                      todo={todo}
+                      handleEditButtonPushed={handleEditButtonPushed} />
+                  </div>
+                );
               })}
             </div>
           </>
