@@ -12,11 +12,9 @@ export const List: React.FunctionComponent = () => {
 
   const dispatch = useAppDispatch()
   const todos = useSelector((state: RootState) => state.todos.todos)
-  const [sort, setSort] = useState<any>({
-    key: 'content',
-    order: 1,
-  })
+  const [sort, setSort] = useSelector(() => [sort,setSort])
 
+  const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
 
   const [searchContent, setSearchContent] = useState('')
   const [isEditing, setIsEditing] = useState(false);
@@ -66,7 +64,7 @@ export const List: React.FunctionComponent = () => {
     setSort({ ...sort, order: -sort.order });
   };
 
-  const filteredList = useFilteredList(sort, searchContent)
+  const filteredList = useFilteredList(searchContent)
 
   return (
     <>
@@ -95,14 +93,16 @@ export const List: React.FunctionComponent = () => {
               ))}
 
               {filteredList.map((todo) => {
-                const { id } = todo
+                const { id, isCompleted } = todo
                 return (
-                  <div key={id}>
-                    <ListItem
-                      todo={todo}
-                      handleEditButtonPushed={handleEditButtonPushed} />
-                  </div>
-                );
+                  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+                  (!hideCompleted || !isCompleted) && (
+                    <div key={id}>
+                      <ListItem
+                        todo={todo}
+                        handleEditButtonPushed={handleEditButtonPushed} />
+                    </div>
+                  ));
               })}
             </div>
           </>

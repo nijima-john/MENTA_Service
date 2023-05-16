@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { type RootState } from '../../app/store'
 import escapeStringRegexp from 'escape-string-regexp'
 import axios from 'axios'
+import { useState } from 'react'
 
 export interface Todo {
   id: string
@@ -75,9 +76,13 @@ export const todosSlice = createSlice({
 
 export const { add, remove, toggleHideCompleted, toggleCompleteTask, editContent } = todosSlice.actions
 
-export const useFilteredList = (sort, searchContent): any | SearchContent | Sort => {
+export const useFilteredList = ( searchContent): any | SearchContent | Sort => {
   const todos = useSelector((state: RootState) => state.todos.todos)
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [sort, setSort] = useState<any>({
+    key: 'content',
+    order: 1,
+  })
   const filteredArray = todos.filter((item) => {
     const escapedText = escapeStringRegexp(searchContent.toLowerCase())
     return new RegExp(escapedText).test(item.content.toLowerCase())
@@ -101,10 +106,6 @@ export const useFilteredList = (sort, searchContent): any | SearchContent | Sort
         return 0
       }
     })
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    state.todos.map((todo) => {
-    return (!state.hideCompleted || todo.isCompleted) && sortedArray
-    })
-
+    return sortedArray
   }
 }
