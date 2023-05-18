@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { type RootState } from '../../app/store'
 import escapeStringRegexp from 'escape-string-regexp'
 import axios from 'axios'
-import { useState } from 'react'
 
 export interface Todo {
   id: string
@@ -14,17 +13,6 @@ export interface Todo {
 export interface EditActionPayload {
   id: string
   content: string
-}
-
-interface SearchContent {
-  id: string
-  content: string
-  isCompleted: boolean
-}
-
-interface Sort {
-  key: string
-  order: number
 }
 
 const state = {
@@ -76,19 +64,14 @@ export const todosSlice = createSlice({
 
 export const { add, remove, toggleHideCompleted, toggleCompleteTask, editContent } = todosSlice.actions
 
-export const useFilteredList = ( searchContent): any | SearchContent | Sort => {
+export const useFilteredList = (sort, searchContent): Todo[] => {
   const todos = useSelector((state: RootState) => state.todos.todos)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [sort, setSort] = useState<any>({
-    key: 'content',
-    order: 1,
-  })
   const filteredArray = todos.filter((item) => {
     const escapedText = escapeStringRegexp(searchContent.toLowerCase())
     return new RegExp(escapedText).test(item.content.toLowerCase())
   })
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-  if (sort.key) {
+  if (sort.key.length > 0) {
     const sortedArray = filteredArray.sort((a, b) => {
       if (sort.key === 'isCompleted') {
         const valueA = a.isCompleted
@@ -108,4 +91,5 @@ export const useFilteredList = ( searchContent): any | SearchContent | Sort => {
     })
     return sortedArray
   }
+  return []
 }

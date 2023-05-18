@@ -11,11 +11,11 @@ import { Button } from '@mui/material';
 export const List: React.FunctionComponent = () => {
 
   const dispatch = useAppDispatch()
-  const todos = useSelector((state: RootState) => state.todos.todos)
-  const [sort, setSort] = useSelector(() => [sort,setSort])
-
   const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
-
+  const [sort, setSort] = useState({
+    key: 'content',
+    order: 1,
+  })
   const [searchContent, setSearchContent] = useState('')
   const [isEditing, setIsEditing] = useState(false);
   const [editingState, setEditingState] = useState({
@@ -55,16 +55,18 @@ export const List: React.FunctionComponent = () => {
     setIsEditing(false);
   }
 
-  const KEYS = Object.keys(todos[0])
+  // const KEYS = Object.keys(todos[0])
+
   const fetchPostAPI = (): void => {
     void dispatch(fetchAPI());
   }
 
-  const handleSort = (key: string): void => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleSort = (): void => {
     setSort({ ...sort, order: -sort.order });
   };
 
-  const filteredList = useFilteredList(searchContent)
+  const filteredList = useFilteredList(sort, searchContent)
 
   return (
     <>
@@ -82,15 +84,7 @@ export const List: React.FunctionComponent = () => {
           <>
             <h1>Todolist</h1>
             <div>
-              {KEYS.map((key, index) => (
-                <Button variant="contained"
-                  style={{ margin: "5px" }}
-                  key={index}
-                  onClick={() => { handleSort(key) }}
-                >
-                  {key}で並び替え
-                </Button>
-              ))}
+              <Button variant="contained" onClick={() => { handleSort() }} >内容で並び替え</Button>
 
               {filteredList.map((todo) => {
                 const { id, isCompleted } = todo
