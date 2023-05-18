@@ -70,7 +70,7 @@ export const useFilteredList = (sort, searchContent): Todo[] => {
     const escapedText = escapeStringRegexp(searchContent.toLowerCase())
     return new RegExp(escapedText).test(item.content.toLowerCase())
   })
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+
   if (sort.key.length > 0) {
     const sortedArray = filteredArray.sort((a, b) => {
       if (sort.key === 'isCompleted') {

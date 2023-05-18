@@ -55,13 +55,10 @@ export const List: React.FunctionComponent = () => {
     setIsEditing(false);
   }
 
-  // const KEYS = Object.keys(todos[0])
-
   const fetchPostAPI = (): void => {
     void dispatch(fetchAPI());
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSort = (): void => {
     setSort({ ...sort, order: -sort.order });
   };
@@ -89,7 +86,6 @@ export const List: React.FunctionComponent = () => {
               {filteredList.map((todo) => {
                 const { id, isCompleted } = todo
                 return (
-                  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
                   (!hideCompleted || !isCompleted) && (
                     <div key={id}>
                       <ListItem
