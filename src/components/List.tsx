@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useAppDispatch } from '../app/store';
+import { useAppDispatch, type RootState } from '../app/store';
 import { editContent, fetchAPI, useFilteredList } from "../features/todo/todoSlice"
 import { ListItemEdit } from './ListItemEdit';
 import { ListItem } from './ListItem';
@@ -11,6 +11,7 @@ import { Button } from '@mui/material';
 export const List: React.FunctionComponent = () => {
 
   const dispatch = useAppDispatch()
+  const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
   const [sort, setSort] = useSelector(() => [sort, setSort])
   const [searchContent, setSearchContent] = useSelector(() => [searchContent, setSearchContent])
   const [isEditing, setIsEditing] = useState(false);
@@ -80,14 +81,15 @@ export const List: React.FunctionComponent = () => {
               <Button variant="contained" onClick={() => { handleSort() }} >内容で並び替え</Button>
 
               {filteredList.map((todo) => {
-                const { id } = todo
+                const { id, isCompleted } = todo
                 return (
-                  <div key={id}>
-                    <ListItem
-                      todo={todo}
-                      handleEditButtonPushed={handleEditButtonPushed} />
-                  </div>
-                );
+                  (!hideCompleted || !isCompleted) && (
+                    <div key={id}>
+                      <ListItem
+                        todo={todo}
+                        handleEditButtonPushed={handleEditButtonPushed} />
+                    </div>
+                  ));
               })}
             </div>
           </>

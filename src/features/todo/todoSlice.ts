@@ -77,7 +77,7 @@ export const useFilteredList = (): Todo[] => {
 
   const filteredArray = todos.filter((item) => {
     const escapedText = escapeStringRegexp(searchContent.toLowerCase())
-    return (!state.hideCompleted || !item.isCompleted) && (new RegExp(escapedText).test(item.content.toLowerCase()))
+    return new RegExp(escapedText).test(item.content.toLowerCase())
   })
 
   if (sort.key.length > 0) {
