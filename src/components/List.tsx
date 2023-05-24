@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useAppDispatch, type RootState } from '../app/store';
+import { useAppDispatch } from '../app/store';
 import { editContent, fetchAPI, useFilteredList } from "../features/todo/todoSlice"
 import { ListItemEdit } from './ListItemEdit';
 import { ListItem } from './ListItem';
@@ -11,12 +11,8 @@ import { Button } from '@mui/material';
 export const List: React.FunctionComponent = () => {
 
   const dispatch = useAppDispatch()
-  const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
-  const [sort, setSort] = useState({
-    key: 'content',
-    order: 1,
-  })
-  const [searchContent, setSearchContent] = useState('')
+  const [sort, setSort] = useSelector(() => [sort, setSort])
+  const [searchContent, setSearchContent] = useSelector(() => [searchContent, setSearchContent])
   const [isEditing, setIsEditing] = useState(false);
   const [editingState, setEditingState] = useState({
     id: "",
@@ -63,7 +59,7 @@ export const List: React.FunctionComponent = () => {
     setSort({ ...sort, order: -sort.order });
   };
 
-  const filteredList = useFilteredList(sort, searchContent)
+  const filteredList = useFilteredList()
 
   return (
     <>
@@ -84,15 +80,14 @@ export const List: React.FunctionComponent = () => {
               <Button variant="contained" onClick={() => { handleSort() }} >内容で並び替え</Button>
 
               {filteredList.map((todo) => {
-                const { id, isCompleted } = todo
+                const { id } = todo
                 return (
-                  (!hideCompleted || !isCompleted) && (
-                    <div key={id}>
-                      <ListItem
-                        todo={todo}
-                        handleEditButtonPushed={handleEditButtonPushed} />
-                    </div>
-                  ));
+                  <div key={id}>
+                    <ListItem
+                      todo={todo}
+                      handleEditButtonPushed={handleEditButtonPushed} />
+                  </div>
+                );
               })}
             </div>
           </>
