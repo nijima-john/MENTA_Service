@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { type RootState } from '../../app/store'
 import escapeStringRegexp from 'escape-string-regexp'
 import axios from 'axios'
+import { useState } from 'react'
 
 export interface Todo {
   id: string
@@ -38,7 +39,6 @@ export const fetchAPI = createAsyncThunk('api/fetchAPI', async () => {
   console.log(response.data)
 })
 
-
 export const todosSlice = createSlice({
   name: 'todosSlice',
   initialState: state,
@@ -65,11 +65,40 @@ export const todosSlice = createSlice({
 
 export const { add, remove, toggleHideCompleted, toggleCompleteTask, editContent } = todosSlice.actions
 
-export const useFilteredList = (searchContent): Todo[] => {
+export const useFilteredList = (): Todo[] => {
   const todos = useSelector((state: RootState) => state.todos.todos)
-  return todos.filter((item) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [sort, setSort] = useState({
+    key: 'content',
+    order: 1,
+  })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [searchContent, setSearchContent] = useState("");
+
+  const filteredArray = todos.filter((item) => {
     const escapedText = escapeStringRegexp(searchContent.toLowerCase())
     return new RegExp(escapedText).test(item.content.toLowerCase())
   })
-}
 
+  if (sort.key.length > 0) {
+    const sortedArray = filteredArray.sort((a, b) => {
+      if (sort.key === 'isCompleted') {
+        const valueA = a.isCompleted
+        const valueB = b.isCompleted
+        return valueA > valueB ? 1 * sort.order : -1 * sort.order
+      } else if (sort.key === 'content') {
+        const valueA = a.content
+        const valueB = b.content
+        return valueA < valueB ? 1 * sort.order : -1 * sort.order
+      } else if (sort.key === 'id') {
+        const valueA = a.id
+        const valueB = b.id
+        return valueA > valueB ? 1 * sort.order : -1 * sort.order
+      } else {
+        return 0
+      }
+    })
+    return sortedArray
+  }
+  return []
+}
