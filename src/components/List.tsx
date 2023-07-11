@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '../app/store';
-import { editContent, fetchAPI, useFilteredList } from "../features/todo/todoSlice"
+import { editContent, fetchAPI, searchContent, useFilteredList } from "../features/todo/todoSlice"
 import { ListItemEdit } from './ListItemEdit';
 import { ListItem } from './ListItem';
 import { Button } from '@mui/material';
@@ -12,8 +12,6 @@ export const List: React.FunctionComponent = () => {
 
   const dispatch = useAppDispatch()
   const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
-  const [sort, setSort] = useSelector(() => [sort, setSort])
-  const [searchContent, setSearchContent] = useSelector(() => [searchContent, setSearchContent])
   const [isEditing, setIsEditing] = useState(false);
   const [editingState, setEditingState] = useState({
     id: "",
@@ -39,7 +37,7 @@ export const List: React.FunctionComponent = () => {
   const { content, id } = editingState;
 
   const onInput = (e: React.FormEvent<HTMLInputElement>): void => {
-    setSearchContent(e.currentTarget.value);
+    dispatch(searchContent)
   }
 
   const editTodo = (): void => {
@@ -83,6 +81,7 @@ export const List: React.FunctionComponent = () => {
               {filteredList.map((todo) => {
                 const { id, isCompleted } = todo
                 return (
+                  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
                   (!hideCompleted || !isCompleted) && (
                     <div key={id}>
                       <ListItem

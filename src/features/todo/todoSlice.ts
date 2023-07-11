@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { type RootState } from '../../app/store'
 import escapeStringRegexp from 'escape-string-regexp'
 import axios from 'axios'
-import { useState } from 'react'
 
 export interface Todo {
   id: string
@@ -29,6 +28,13 @@ const state = {
       isCompleted: true,
     },
   ],
+  sort: [
+    {
+      key: 'content',
+      order: 1,
+    },
+  ],
+  searchContent: '',
   hideCompleted: false,
 }
 
@@ -60,45 +66,52 @@ export const todosSlice = createSlice({
       const { id, content } = action.payload
       state.todos = state.todos.map((todo) => (todo.id === id ? { ...todo, content } : todo))
     },
+    searchContent: (state, action: PayloadAction<any>) => {
+      const { searchContent } = action.payload
+      state.searchContent = state.todos.map((todo) => (todo.content === searchContent ? {...searchContent} : todo))
+    },
+    sortContent: (state, action: PayloadAction<any>) => {
+      const { sort } = action.payload
+      state.sort = state.sort.map((sort) => {...sort, sort.order: -sort.order })
+    }
   },
 })
 
-export const { add, remove, toggleHideCompleted, toggleCompleteTask, editContent } = todosSlice.actions
+export const { add, remove, toggleHideCompleted, toggleCompleteTask, editContent, searchContent } = todosSlice.actions
 
-export const useFilteredList = (): Todo[] => {
+export const useFilteredList = (): any => {
   const todos = useSelector((state: RootState) => state.todos.todos)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [sort, setSort] = useState({
-    key: 'content',
-    order: 1,
-  })
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [searchContent, setSearchContent] = useState("");
+  const searchContent = useSelector((state: RootState) => state.todos.searchContent)
+  const sort = useSelector((state: RootState) => state.todos.sort)
 
   const filteredArray = todos.filter((item) => {
     const escapedText = escapeStringRegexp(searchContent.toLowerCase())
     return new RegExp(escapedText).test(item.content.toLowerCase())
   })
 
-  if (sort.key.length > 0) {
-    const sortedArray = filteredArray.sort((a, b) => {
-      if (sort.key === 'isCompleted') {
-        const valueA = a.isCompleted
-        const valueB = b.isCompleted
-        return valueA > valueB ? 1 * sort.order : -1 * sort.order
-      } else if (sort.key === 'content') {
-        const valueA = a.content
-        const valueB = b.content
-        return valueA < valueB ? 1 * sort.order : -1 * sort.order
-      } else if (sort.key === 'id') {
-        const valueA = a.id
-        const valueB = b.id
-        return valueA > valueB ? 1 * sort.order : -1 * sort.order
-      } else {
-        return 0
-      }
-    })
-    return sortedArray
-  }
-  return []
+  sort.map((sort) => {
+    if (sort.key.length > 0) {
+      const sortedArray = filteredArray.sort((a, b) => {
+        if (sort.key === 'isCompleted') {
+          const valueA = a.isCompleted
+          const valueB = b.isCompleted
+          return valueA > valueB ? 1 * sort.order : -1 * sort.order
+        } else if (sort.key === 'content') {
+          const valueA = a.content
+          const valueB = b.content
+          return valueA < valueB ? 1 * sort.order : -1 * sort.order
+        } else if (sort.key === 'id') {
+          const valueA = a.id
+          const valueB = b.id
+          return valueA > valueB ? 1 * sort.order : -1 * sort.order
+        } else {
+          return 0
+        }
+      })
+      return sortedArray
+    }
+    return []
+  })
+
+
 }
