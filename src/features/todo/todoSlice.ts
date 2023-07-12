@@ -15,6 +15,15 @@ export interface EditActionPayload {
   content: string
 }
 
+export interface SearchPayload {
+  searchContent: string
+}
+
+export interface SortPayload {
+  key: string,
+  order: number,
+}
+
 const state = {
   todos: [
     {
@@ -66,13 +75,12 @@ export const todosSlice = createSlice({
       const { id, content } = action.payload
       state.todos = state.todos.map((todo) => (todo.id === id ? { ...todo, content } : todo))
     },
-    searchContent: (state, action: PayloadAction<any>) => {
+    searchContent: (state, action: PayloadAction<SearchPayload>) => {
       const { searchContent } = action.payload
-      state.searchContent = state.todos.map((todo) => (todo.content === searchContent ? {...searchContent} : todo))
+      state.todos = state.todos.map((todo) => (todo.content === searchContent ? {...todo, searchContent} : todo))
     },
-    sortContent: (state, action: PayloadAction<any>) => {
-      const { sort } = action.payload
-      state.sort = state.sort.map((sort) => {...sort, sort.order: -sort.order })
+    sortContent: (state, action: PayloadAction<SortPayload>) => {
+      const { key, order } = action.payload
     }
   },
 })
