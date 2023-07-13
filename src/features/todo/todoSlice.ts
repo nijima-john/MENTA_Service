@@ -75,17 +75,17 @@ export const todosSlice = createSlice({
       const { id, content } = action.payload
       state.todos = state.todos.map((todo) => (todo.id === id ? { ...todo, content } : todo))
     },
-    searchContent: (state, action: PayloadAction<SearchPayload>) => {
-      const { searchContent } = action.payload
-      state.todos = state.todos.map((todo) => (todo.content === searchContent ? {...todo, searchContent} : todo))
-    },
-    sortContent: (state, action: PayloadAction<SortPayload>) => {
-      const { key, order } = action.payload
-    }
+    // searchContent: (state, action: PayloadAction<Todo | SearchPayload>) => {
+    //   const { searchContent } = action.payload
+    //   state.todos = state.todos.map((todo) => (todo.content === searchContent ? {searchContent} : todo))
+    // },
+    // sortContent: (state, action: PayloadAction<SortPayload>) => {
+    //   const { key, order } = action.payload
+    // }
   },
 })
 
-export const { add, remove, toggleHideCompleted, toggleCompleteTask, editContent, searchContent } = todosSlice.actions
+export const { add, remove, toggleHideCompleted, toggleCompleteTask, editContent } = todosSlice.actions
 
 export const useFilteredList = (): any => {
   const todos = useSelector((state: RootState) => state.todos.todos)

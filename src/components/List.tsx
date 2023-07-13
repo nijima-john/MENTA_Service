@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '../app/store';
-import { editContent, fetchAPI, searchContent, useFilteredList } from "../features/todo/todoSlice"
+import { editContent, fetchAPI, useFilteredList } from "../features/todo/todoSlice"
 import { ListItemEdit } from './ListItemEdit';
 import { ListItem } from './ListItem';
 import { Button } from '@mui/material';
@@ -36,9 +36,7 @@ export const List: React.FunctionComponent = () => {
 
   const { content, id } = editingState;
 
-  const onInput = (e: React.FormEvent<HTMLInputElement>): void => {
-    dispatch(searchContent)
-  }
+
 
   const editTodo = (): void => {
     if (content === '') {
