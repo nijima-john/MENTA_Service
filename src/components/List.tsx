@@ -79,7 +79,6 @@ export const List: React.FunctionComponent = () => {
               {filteredList.map((todo) => {
                 const { id, isCompleted } = todo
                 return (
-                  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
                   (!hideCompleted || !isCompleted) && (
                     <div key={id}>
                       <ListItem
