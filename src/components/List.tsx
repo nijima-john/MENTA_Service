@@ -1,95 +1,90 @@
-
-
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useAppDispatch, type RootState } from '../app/store';
-import { editContent, fetchAPI, useFilteredList } from "../features/todo/todoSlice"
-import { ListItemEdit } from './ListItemEdit';
-import { ListItem } from './ListItem';
-import { Button } from '@mui/material';
+import { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { useAppDispatch, type RootState } from '../app/store'
+import { editContent,  useFilteredList } from '../features/todo/todoSlice'
+import { ListItemEdit } from './ListItemEdit'
+import { ListItem } from './ListItem'
+import { Button } from '@mui/material'
 
 export const List: React.FunctionComponent = () => {
-
   const dispatch = useAppDispatch()
   const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false)
   const [editingState, setEditingState] = useState({
-    id: "",
-    content: "",
+    id: '',
+    content: '',
     isCompleted: false,
-  });
-
+  })
 
   const handleEditButtonPushed = (id: string, content: string): void => {
     setIsEditing(true)
     setEditingState({
-      ...editingState, id, content
+      ...editingState,
+      id,
+      content,
     })
   }
 
-  const handleChange = (e: { target: { name: string; value: string; }; }): void => {
+  const handleChange = (e: { target: { name: string; value: string } }): void => {
     setEditingState({
       ...editingState,
       [e.target.name]: e.target.value,
     })
   }
 
-  const { content, id } = editingState;
-
-
+  const { content, id } = editingState
 
   const editTodo = (): void => {
     if (content === '') {
-      return;
+      return
     }
-    dispatch(editContent({
-      content, id
-    }));
-    setIsEditing(false);
+    dispatch(
+      editContent({
+        content,
+        id,
+      })
+    )
+    setIsEditing(false)
   }
 
-  const fetchPostAPI = (): void => {
-    void dispatch(fetchAPI());
+    const onInput = (e: React.FormEvent<HTMLInputElement>): void => {
+    useFilteredList()
   }
-
-  const handleSort = (): void => {
-    setSort({ ...sort, order: -sort.order });
-  };
 
   const filteredList = useFilteredList()
 
   return (
     <>
-      <input
-        type="text"
-        onInput={onInput}
-        placeholder={"検索"}
-      />
-      <button onClick={fetchPostAPI}>api</button>
+      <input type="text" placeholder={'検索'} onInput={onInput} />
 
-      {
-        isEditing ?
-          <ListItemEdit content={content} handleChange={handleChange} editTodo={editTodo} />
-          :
-          <>
-            <h1>Todolist</h1>
-            <div>
-              <Button variant="contained" onClick={() => { handleSort() }} >内容で並び替え</Button>
+      {isEditing ? (
+        <ListItemEdit content={content} handleChange={handleChange} editTodo={editTodo} />
+      ) : (
+        <>
+          <h1>Todolist</h1>
+          <div>
+            <Button
+              variant="contained"
+              onClick={() => {
+                useFilteredList()
+              }}
+            >
+              内容で並び替え
+            </Button>
 
-              {filteredList.map((todo) => {
-                const { id, isCompleted } = todo
-                return (
-                  (!hideCompleted || !isCompleted) && (
-                    <div key={id}>
-                      <ListItem
-                        todo={todo}
-                        handleEditButtonPushed={handleEditButtonPushed} />
-                    </div>
-                  ));
-              })}
-            </div>
-          </>
-      }
+            {filteredList.map((todo) => {
+              const { id, isCompleted } = todo
+              return (
+                (!hideCompleted || !isCompleted) && (
+                  <div key={id}>
+                    <ListItem todo={todo} handleEditButtonPushed={handleEditButtonPushed} />
+                  </div>
+                )
+              )
+            })}
+          </div>
+        </>
+      )}
     </>
   )
 }

@@ -20,8 +20,8 @@ export interface SearchPayload {
 }
 
 export interface SortPayload {
-  key: string,
-  order: number,
+  key: string
+  order: number
 }
 
 const state = {
@@ -75,22 +75,17 @@ export const todosSlice = createSlice({
       const { id, content } = action.payload
       state.todos = state.todos.map((todo) => (todo.id === id ? { ...todo, content } : todo))
     },
-    // searchContent: (state, action: PayloadAction<Todo | SearchPayload>) => {
-    //   const { searchContent } = action.payload
-    //   state.todos = state.todos.map((todo) => (todo.content === searchContent ? {searchContent} : todo))
-    // },
-    // sortContent: (state, action: PayloadAction<SortPayload>) => {
-    //   const { key, order } = action.payload
-    // }
   },
 })
 
 export const { add, remove, toggleHideCompleted, toggleCompleteTask, editContent } = todosSlice.actions
 
-export const useFilteredList = (): any => {
+export const useFilteredList = (): Todo[] => {
   const todos = useSelector((state: RootState) => state.todos.todos)
   const searchContent = useSelector((state: RootState) => state.todos.searchContent)
   const sort = useSelector((state: RootState) => state.todos.sort)
+  // const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
+  // const { isCompleted } = todos
 
   const filteredArray = todos.filter((item) => {
     const escapedText = escapeStringRegexp(searchContent.toLowerCase())
@@ -121,5 +116,6 @@ export const useFilteredList = (): any => {
     return []
   })
 
-
+  // return (!hideCompleted || !isCompleted) && todos
+  return todos
 }
