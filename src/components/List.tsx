@@ -15,6 +15,11 @@ export const List: React.FunctionComponent = () => {
     content: '',
     isCompleted: false,
   })
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState({
+    key: 'content',
+    order: 1,
+  })
 
   const handleEditButtonPushed = (id: string, content: string): void => {
     setIsEditing(true)
@@ -48,10 +53,14 @@ export const List: React.FunctionComponent = () => {
   }
 
     const onInput = (e: React.FormEvent<HTMLInputElement>): void => {
-    useFilteredList()
+    setSearch(e.currentTarget.value);
   }
 
-  const filteredList = useFilteredList()
+  const handleSort = (): void => {
+    setSort({ ...sort, order: -sort.order });
+  };
+
+  const filteredList = useFilteredList(search, sort)
 
   return (
     <>
@@ -66,7 +75,7 @@ export const List: React.FunctionComponent = () => {
             <Button
               variant="contained"
               onClick={() => {
-                useFilteredList()
+                handleSort()
               }}
             >
               内容で並び替え

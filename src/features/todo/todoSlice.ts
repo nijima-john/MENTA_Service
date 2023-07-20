@@ -80,19 +80,17 @@ export const todosSlice = createSlice({
 
 export const { add, remove, toggleHideCompleted, toggleCompleteTask, editContent } = todosSlice.actions
 
-export const useFilteredList = (): Todo[] => {
+export const useFilteredList = (search,sort): Todo[] => {
   const todos = useSelector((state: RootState) => state.todos.todos)
-  const searchContent = useSelector((state: RootState) => state.todos.searchContent)
-  const sort = useSelector((state: RootState) => state.todos.sort)
-  // const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
-  // const { isCompleted } = todos
+  // const searchContent = useSelector((state: RootState) => state.todos.searchContent)
+  // const sort = useSelector((state: RootState) => state.todos.sort)
 
   const filteredArray = todos.filter((item) => {
-    const escapedText = escapeStringRegexp(searchContent.toLowerCase())
+    const escapedText = escapeStringRegexp(search.toLowerCase())
     return new RegExp(escapedText).test(item.content.toLowerCase())
   })
 
-  sort.map((sort) => {
+ 
     if (sort.key.length > 0) {
       const sortedArray = filteredArray.sort((a, b) => {
         if (sort.key === 'isCompleted') {
@@ -113,9 +111,5 @@ export const useFilteredList = (): Todo[] => {
       })
       return sortedArray
     }
-    return []
-  })
-
-  // return (!hideCompleted || !isCompleted) && todos
-  return todos
+  return filteredArray
 }
