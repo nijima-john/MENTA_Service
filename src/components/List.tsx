@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch, type RootState } from '../app/store'
-import { editContent, useFilteredList } from '../features/todo/todoSlice'
+import { editContent, searchHandler, useFilteredList } from '../features/todo/todoSlice'
 import { ListItemEdit } from './ListItemEdit'
 import { ListItem } from './ListItem'
 import { Button } from '@mui/material'
@@ -15,11 +15,7 @@ export const List: React.FunctionComponent = () => {
     content: '',
     isCompleted: false,
   })
-  const [search, setSearch] = useState('')
-  const [sort, setSort] = useState({
-    key: 'content',
-    order: 1,
-  })
+
 
   const handleEditButtonPushed = (id: string, content: string): void => {
     setIsEditing(true)
@@ -52,19 +48,16 @@ export const List: React.FunctionComponent = () => {
     setIsEditing(false)
   }
 
-  const onInput = (e: React.FormEvent<HTMLInputElement>): void => {
-    setSearch(e.currentTarget.value)
+
+  const SearchEventHandler = (): void => {
+    dispatch(searchHandler())
   }
 
-  const handleSort = (): void => {
-    setSort({ ...sort, order: -sort.order })
-  }
-
-  const filteredList = useFilteredList(search, sort)
+  const filteredList = useFilteredList()
 
   return (
     <>
-      <input type="text" placeholder={'検索'} onInput={onInput} />
+      <input type="text" placeholder={'検索'} onInput={SearchEventHandler} />
 
       {isEditing ? (
         <ListItemEdit content={content} handleChange={handleChange} editTodo={editTodo} />
@@ -75,7 +68,7 @@ export const List: React.FunctionComponent = () => {
             <Button
               variant="contained"
               onClick={() => {
-                handleSort()
+                console.log("並び替え")
               }}
             >
               内容で並び替え
