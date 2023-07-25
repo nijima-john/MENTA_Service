@@ -1,89 +1,101 @@
-
-import { useSelector } from 'react-redux';
-import { useAppDispatch, type RootState } from '../app/store';
-import { editContent, fetchAPI, useFilteredList } from "../features/todo/todoSlice"
-import { useState } from 'react';
-import { ListItemEdit } from './ListItemEdit';
-import { ListItem } from './ListItem';
+import { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { useAppDispatch, type RootState } from '../app/store'
+import { editContent, setSearchContent, useFilteredList } from '../features/todo/todoSlice'
+import { ListItemEdit } from './ListItemEdit'
+import { ListItem } from './ListItem'
+import { Button } from '@mui/material'
 
 export const List: React.FunctionComponent = () => {
-
   const dispatch = useAppDispatch()
-  const [isEditing, setIsEditing] = useState(false);
-  const [searchContent, setSearchContent] = useState("");
+  const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
+  const searchContent = useSelector((state: RootState) => state.todos.searchContent)
+  const [isEditing, setIsEditing] = useState(false)
   const [editingState, setEditingState] = useState({
-    id: "",
-    content: "",
+    id: '',
+    content: '',
     isCompleted: false,
-  });
+  })
+  const [sort, setSort] = useState({
+    key: 'content',
+    order: 1,
+  })
 
   const handleEditButtonPushed = (id: string, content: string): void => {
     setIsEditing(true)
     setEditingState({
-      ...editingState, id, content
+      ...editingState,
+      id,
+      content,
     })
   }
 
-  const handleChange = (e: { target: { name: string; value: string; }; }): void => {
+  const handleChange = (e: { target: { name: string; value: string } }): void => {
     setEditingState({
       ...editingState,
       [e.target.name]: e.target.value,
     })
   }
 
-  const { content, id } = editingState;
+  const { content, id } = editingState
 
   const editTodo = (): void => {
     if (content === '') {
-      return;
+      return
     }
-    dispatch(editContent({
-      content, id
-    }));
-    setIsEditing(false);
+    dispatch(
+      editContent({
+        content,
+        id,
+      })
+    )
+    setIsEditing(false)
   }
 
-  const fetchPostAPI = (): void => {
-    void dispatch(fetchAPI());
+  const SearchEventHandler = (): void => {
+    dispatch(setSearchContent({
+      searchContent
+    }))
   }
 
-  const onInput = (e: React.FormEvent<HTMLInputElement>): void => {
-    setSearchContent(e.currentTarget.value);
+  const handleSort = (): void => {
+    setSort({ ...sort, order: -sort.order })
   }
-  const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
 
-  const filteredList = useFilteredList(searchContent)
+  const filteredList = useFilteredList(sort)
 
   return (
     <>
-      <input
-        type="text"
-        onInput={onInput}
-        placeholder={"検索"}
-      />
-      <button onClick={fetchPostAPI}>api</button>
+      <input type="text" placeholder={'検索'} value={searchContent} onChange={SearchEventHandler} />
 
-      {
-        isEditing ?
-          <ListItemEdit content={content} handleChange={handleChange} editTodo={editTodo} />
-          :
-          <>
-            <h1>Todolist</h1>
-            <div>
-              {filteredList.map((todo) => {
-                const { id, isCompleted } = todo
-                return (
-                  (!hideCompleted || !isCompleted) && (
-                    <div key={id}>
-                      <ListItem
-                        todo={todo}
-                        handleEditButtonPushed={handleEditButtonPushed} />
-                    </div>
-                  ));
-              })}
-            </div>
-          </>
-      }
+      {isEditing ? (
+        <ListItemEdit content={content} handleChange={handleChange} editTodo={editTodo} />
+      ) : (
+        <>
+          <h1>Todolist</h1>
+          <div>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleSort()
+              }}
+            >
+              内容で並び替え
+            </Button>
+
+            {filteredList.map((todo) => {
+              const { id, isCompleted } = todo
+              return (
+                (!hideCompleted || !isCompleted) && (
+                  <div key={id}>
+                    <ListItem todo={todo} handleEditButtonPushed={handleEditButtonPushed} />
+                  </div>
+                )
+              )
+            })}
+          </div>
+        </>
+      )}
     </>
   )
 }
