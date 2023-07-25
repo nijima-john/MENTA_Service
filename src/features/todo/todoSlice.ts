@@ -75,8 +75,9 @@ export const todosSlice = createSlice({
       const { id, content } = action.payload
       state.todos = state.todos.map((todo) => (todo.id === id ? { ...todo, content } : todo))
     },
-    setSearchContent: (state, action: PayloadAction<any>) => {
-      state.searchContent.push(action.payload)
+    setSearchContent: (state, action: PayloadAction<SearchPayload>) => {
+      const { searchContent } = action.payload
+      state.searchContent += searchContent
     },
   },
 })
