@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch, type RootState } from '../app/store'
-import { editContent, searchHandler, useFilteredList } from '../features/todo/todoSlice'
+import { editContent, setSearchContent, useFilteredList } from '../features/todo/todoSlice'
 import { ListItemEdit } from './ListItemEdit'
 import { ListItem } from './ListItem'
 import { Button } from '@mui/material'
@@ -9,13 +9,18 @@ import { Button } from '@mui/material'
 export const List: React.FunctionComponent = () => {
   const dispatch = useAppDispatch()
   const hideCompleted = useSelector((state: RootState) => state.todos.hideCompleted)
+  const searchContent = useSelector((state: RootState) => state.todos.searchContent)
   const [isEditing, setIsEditing] = useState(false)
   const [editingState, setEditingState] = useState({
     id: '',
     content: '',
     isCompleted: false,
   })
-
+  const [sort, setSort] = useState({
+    key: 'content',
+    order: 1,
+  })
+  const [search, setSearch] = useState(searchContent)
 
   const handleEditButtonPushed = (id: string, content: string): void => {
     setIsEditing(true)
@@ -48,16 +53,20 @@ export const List: React.FunctionComponent = () => {
     setIsEditing(false)
   }
 
-
-  const SearchEventHandler = (): void => {
-    dispatch(searchHandler())
+  const SearchEventHandler = (e: React.FormEvent<HTMLInputElement>): void => {
+    setSearch(e.currentTarget.value)
+    dispatch(setSearchContent(search))
   }
 
-  const filteredList = useFilteredList()
+  const handleSort = (): void => {
+    setSort({ ...sort, order: -sort.order })
+  }
+
+  const filteredList = useFilteredList(sort)
 
   return (
     <>
-      <input type="text" placeholder={'検索'} onInput={SearchEventHandler} />
+      <input type="text" placeholder={'検索'} value={search} onChange={SearchEventHandler} />
 
       {isEditing ? (
         <ListItemEdit content={content} handleChange={handleChange} editTodo={editTodo} />
@@ -68,7 +77,7 @@ export const List: React.FunctionComponent = () => {
             <Button
               variant="contained"
               onClick={() => {
-                console.log("並び替え")
+                handleSort()
               }}
             >
               内容で並び替え
