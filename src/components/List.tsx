@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch, type RootState } from '../app/store'
-import { editContent,  useFilteredList } from '../features/todo/todoSlice'
+import { editContent, useFilteredList } from '../features/todo/todoSlice'
 import { ListItemEdit } from './ListItemEdit'
 import { ListItem } from './ListItem'
 import { Button } from '@mui/material'
@@ -15,7 +15,7 @@ export const List: React.FunctionComponent = () => {
     content: '',
     isCompleted: false,
   })
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('')
   const [sort, setSort] = useState({
     key: 'content',
     order: 1,
@@ -52,13 +52,13 @@ export const List: React.FunctionComponent = () => {
     setIsEditing(false)
   }
 
-    const onInput = (e: React.FormEvent<HTMLInputElement>): void => {
-    setSearch(e.currentTarget.value);
+  const onInput = (e: React.FormEvent<HTMLInputElement>): void => {
+    setSearch(e.currentTarget.value)
   }
 
   const handleSort = (): void => {
-    setSort({ ...sort, order: -sort.order });
-  };
+    setSort({ ...sort, order: -sort.order })
+  }
 
   const filteredList = useFilteredList(search, sort)
 
